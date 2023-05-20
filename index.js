@@ -52,7 +52,7 @@ async function run() {
         app.get('/mytoys', async (req, res) => {
             let query = {};
             if (req.query?.email) {
-                query = { email: req.query.email }
+                query = { sellerEmail: req.query.email }
             }
             const result = await toyCollection.find(query).toArray();
             res.send(result);
@@ -63,6 +63,12 @@ async function run() {
             const query = { _id : new ObjectId(id)}
             const result = await toyCollection.findOne(query)
             res.send(result)
+        })
+
+        app.post('/addtoys', async (req, res) => {
+            const added = req.body
+            const result = await toyCollection.insertOne(added)
+            res.send(result);
         })
 
         // Send a ping to confirm a successful connection
