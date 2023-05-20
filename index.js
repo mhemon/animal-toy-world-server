@@ -54,9 +54,19 @@ async function run() {
             if (req.query?.email) {
                 query = { sellerEmail: req.query.email }
             }
-            const result = await toyCollection.find(query).toArray();
+
+            let sort = {};
+            if (req.query?.sort === 'ascending') {
+                sort = { price: 1 };
+            } else if (req.query?.sort === 'descending') {
+                sort = { price: -1 };
+            }
+
+            const result = await toyCollection.find(query).sort(sort).toArray();
             res.send(result);
         })
+
+
 
         app.patch('/mytoys/:id', async (req, res) => {
             const id = req.params.id;
