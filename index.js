@@ -37,7 +37,7 @@ async function run() {
 
         app.get('/category', async (req, res) => {
             const subcat = req.query.subcategory
-            const cursor = toyCollection.find({"subCategory": subcat});
+            const cursor = toyCollection.find({ "subCategory": subcat });
             const result = await cursor.toArray();
             res.send(result)
         })
@@ -58,9 +58,25 @@ async function run() {
             res.send(result);
         })
 
+        app.patch('/mytoys/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedToy = req.body;
+            console.log(updatedToy);
+            const updateDoc = {
+                $set: {
+                    price: updatedToy.price,
+                    quantity: updatedToy.quantity,
+                    details: updatedToy.details
+                },
+            };
+            const result = await toyCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
         app.get('/toy/:id', async (req, res) => {
             const id = req.params.id
-            const query = { _id : new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await toyCollection.findOne(query)
             res.send(result)
         })
@@ -69,6 +85,14 @@ async function run() {
             const added = req.body
             const result = await toyCollection.insertOne(added)
             res.send(result);
+        })
+
+        app.delete('/mytoys/:id', async (req, res) => {
+            const id = req.params.id
+            // console.log(id);
+            const query = { _id: new ObjectId(id) }
+            const result = await toyCollection.deleteOne(query)
+            res.send(result)
         })
 
         // Send a ping to confirm a successful connection
